@@ -142,7 +142,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-warm-border py-12 mt-auto">
+      <footer className="footer-section bg-white border-t border-warm-border py-12 mt-auto relative z-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
             <div className="text-left">

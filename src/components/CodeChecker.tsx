@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Play, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Play, Sparkles, AlertCircle, CheckCircle2, Maximize2, Minimize2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -16,6 +16,7 @@ export default function CodeChecker() {
   const [feedback, setFeedback] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [previewDoc, setPreviewDoc] = useState('');
+  const [isExpanded, setIsExpanded] = useState(false);
 
   useEffect(() => {
     const doc = `
@@ -129,28 +130,44 @@ export default function CodeChecker() {
           {(isLoading || feedback) && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
+              animate={{ 
+                opacity: 1, 
+                y: 0,
+                height: isExpanded ? 'auto' : '50%',
+                zIndex: isExpanded ? 50 : 0
+              }}
               exit={{ opacity: 0, y: 20 }}
-              className="h-1/2"
+              className={`transition-all duration-300 ${isExpanded ? 'absolute inset-x-0 bottom-0 top-0 m-4 sm:m-6 lg:m-8' : 'h-1/2'}`}
             >
-              <Card className="h-full border-warm-border bg-warm-bg/50">
-                <CardHeader className="py-3 px-4 border-b">
-                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+              <Card className="h-full border-warm-border bg-warm-bg shadow-xl flex flex-col overflow-hidden">
+                <CardHeader className="py-3 px-4 border-b flex flex-row items-center justify-between shrink-0 bg-white/50 backdrop-blur-sm">
+                  <CardTitle className="text-sm font-bold flex items-center gap-2">
                     <Sparkles className="w-4 h-4 text-orange-500" />
                     Góp ý từ Thầy AI
                   </CardTitle>
+                  {feedback && !isLoading && (
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      onClick={() => setIsExpanded(!isExpanded)}
+                      className="h-8 w-8 rounded-full"
+                    >
+                      {isExpanded ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+                    </Button>
+                  )}
                 </CardHeader>
-                <CardContent className="p-4">
-                  <ScrollArea className="h-[200px] pr-4">
+                <CardContent className="p-4 flex-1 overflow-hidden relative">
+                  <ScrollArea className={`h-full pr-4 ${isExpanded ? 'max-h-full' : 'h-[200px]'}`}>
                     {isLoading ? (
-                      <div className="space-y-2">
+                      <div className="space-y-3">
                         <Skeleton className="h-4 w-full" />
                         <Skeleton className="h-4 w-[90%]" />
                         <Skeleton className="h-4 w-[95%]" />
                         <Skeleton className="h-4 w-[80%]" />
+                        <Skeleton className="h-4 w-[85%]" />
                       </div>
                     ) : (
-                      <div className="prose prose-sm max-w-none prose-slate">
+                      <div className="prose prose-sm max-w-none prose-slate animate-in fade-in slide-in-from-bottom-2 duration-500">
                         <ReactMarkdown>{feedback}</ReactMarkdown>
                       </div>
                     )}
